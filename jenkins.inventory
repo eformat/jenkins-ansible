@@ -1,0 +1,19 @@
+[all:vars]
+
+[local]
+localhost ansible_connection=local
+
+[local:vars]
+# run roles
+jenkins_install_ocp=true
+jenkins_project_name=ci-cd
+jenkins_memory=2048Mi
+ocp_apps_domain=apps.foo.sandbox199.opentlc.com
+
+[remote]
+remotehost
+
+[remote:vars]
+# run roles
+# install_remote_ocp=false
+

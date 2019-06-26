@@ -1,0 +1,8 @@
+---  
+- name: "Install Jenkins"
+  hosts: local
+  tasks:
+    - import_role:
+        name: jenkins_install_ocp
+      when: jenkins_install_ocp == 'true'
+
