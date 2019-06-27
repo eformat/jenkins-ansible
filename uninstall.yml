@@ -7,3 +7,14 @@
         api_version: project.openshift.io/v1
         kind: Project
         state: absent
+      when: jenkins_install_ocp == 'true'
+
+- name: Delete Nexus Project
+  hosts: local
+  tasks:
+    - k8s:
+        name: "{{ nexus_project_name }}"
+        api_version: project.openshift.io/v1
+        kind: Project
+        state: absent
+      when: nexus_install_ocp == 'true'

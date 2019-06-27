@@ -1,0 +1,39 @@
+---
+- name: Create Nexus Project
+  k8s:
+    name: "{{ nexus_project_name }}"
+    api_version: project.openshift.io/v1
+    kind: Project
+    state: present
+
+- template:
+    src: storage.j2
+    dest: /tmp/storage.yml
+
+- name: Create Nexus PV
+  shell: oc create -f /tmp/storage.yml -n {{ nexus_project_name }}
+
+- template:
+    src: jenkins-persistent.j2
+    dest: /tmp/jenkins-persistent.yml
+
+- name: Create Jenkins
+  shell: "oc process -f /tmp/jenkins-persistent.yml \
+    -p NAMESPACE=openshift \
+    -p MEMORY_LIMIT={{ jenkins_memory }} \
+    -p ENABLE_OAUTH=true | oc create -n {{ jenkins_project_name }} -f-"
+  register: command_result
+  failed_when: "command_result.rc != 0 and 'already exists' not in command_result.stderr"  
+
+- debug: var=command_result
+
+- name: Wait until Jenkins API is available 
+  uri: 
+    url: https://jenkins-{{ jenkins_project_name }}.{{ ocp_apps_domain }}/login
+    method: HEAD
+    validate_certs: no
+  register: wait_jenkins_result
+  until: wait_jenkins_result is succeeded
+  ignore_errors: yes
+  retries: 30
+  delay: 30    

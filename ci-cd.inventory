@@ -1,0 +1,23 @@
+[all:vars]
+
+[local]
+localhost ansible_connection=local
+
+[local:vars]
+# run roles
+jenkins_install_ocp=false
+jenkins_project_name=ci-cd
+jenkins_memory=2048Mi
+
+nexus_install_ocp=true
+nexus_project_name=ci-cd
+nexus_storage_size=10Gi
+ocp_apps_domain=apps.foo.sandbox199.opentlc.com
+
+[remote]
+remotehost
+
+[remote:vars]
+# run roles
+# install_remote_ocp=false
+
